@@ -1,0 +1,59 @@
+{
+	"description": "项目配置文件。",
+	"packOptions": {
+		"ignore": []
+	},
+	"setting": {
+		"urlCheck": false
+	},
+	"compileType": "miniprogram",
+	"libVersion": "2.7.0",
+	"appid": "wxbc7692f7c6706fd3",
+	"projectname": "news-app",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"current": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": 2,
+			"list": [
+				{
+					"id": 0,
+					"name": "pages/detail/detail",
+					"pathName": "pages/detail/detail",
+					"query": "query= %7B%22id%22%3A%2293C4A7F8-3EFA-499C-608D-2158B866AAA796759%22%2C%22newsid%22%3A96759%2C%22article_type%22%3A1%2C%22datetime%22%3A%2220%20%E5%88%86%E9%92%9F%E5%89%8D%22%2C%22title%22%3A%22%E8%81%AA%E6%98%8E%E7%9A%84%E7%8B%90%E7%8B%B8%22%2C%22image_url%22%3A%22https%3A%2F%2Fimg.36krcdn.com%2F20190905%2Fv2_1567667561026_img_png%22%2C%22source%22%3A%22%E5%95%86%E4%B8%9A%E5%9C%B0%E4%BA%A7%E5%BF%97%22%2C%22comment_count%22%3A0%2C%22post_id%22%3A%225243291%22%7D",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/list/list",
+					"pathName": "pages/list/list",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "pages/demoPage/index",
+					"pathName": "pages/demoPage/index",
+					"query": "",
+					"scene": null
+				}
+			]
+		}
+	}
+}

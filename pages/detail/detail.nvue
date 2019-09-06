@@ -1,0 +1,228 @@
+<template>
+    <view>		
+		<uni-list v-for="item in list" :key="item.name">
+			<uni-list-item :title="item.name" @click="play(item)"
+				show-extra-icon="true"
+				:show-arrow="false"
+				show-badge="true"
+				:badge-text="format(item.duration)"
+				badge-type="default"
+				:extra-icon="{color: '#4cd964',size: '22',type: 'spinner'}">
+			</uni-list-item>
+		</uni-list>
+    </view>
+</template>
+
+<script>
+    import htmlParser from '@/common/html-parser';
+	import uniList from '@/components/uni-list/uni-list.vue';
+	import uniListItem from '@/components/uni-list-item/uni-list-item.vue';
+
+    const FAIL_CONTENT = '<p>获取信息失败1</p>';
+
+    function parseImgs(nodes) {
+        nodes.forEach(node => {
+            if (
+                node.name === 'img' &&
+                node.attrs &&
+                node.attrs['data-img-size-val']
+            ) {
+                const sizes = node.attrs['data-img-size-val'].split(',')
+                const width = uni.upx2px(720*0.9)
+                const height = parseInt(width * (sizes[1] / sizes[0]))
+                node.attrs.style = `width:${width};height:${height};`
+            }
+            if (Array.isArray(node.children)) {
+                parseImgs(node.children)
+            }
+        })
+        return nodes
+    }
+
+    export default {
+        data() {
+            return {
+                banner: {},
+                content: [],
+				list: [{
+					name: '01五颗松树小屋①',
+					duration: 120
+				},{
+					name: '02五颗松树小屋②',
+					duration: 237
+				},{
+					name: '03五颗松树小屋③',
+					duration: 156
+				},{
+					name: '04五颗松树小屋④',
+					duration: 434
+				},{
+					name: '05小狐狸的新家',
+					duration: 170
+				},{
+					name: '06狐狸和渔夫',
+					duration: 256
+				},{
+					name: '07得到了一个神桌①',
+					duration: 789
+				},{
+					name: '08得到了一个神桌②',
+					duration: 150
+				},{
+					name: '09神奇的电话',
+					duration: 328
+				},{
+					name: '10一封胆大的信',
+					duration: 156
+				},{
+					name: '11狐狸进城①',
+					duration: 356
+				},{
+					name: '12狐狸进城②',
+					duration: 358
+				},{
+					name: '13捡到一个钱包①',
+					duration: 387
+				},{
+					name: '14捡到一个钱包②',
+					duration: 150
+				},{
+					name: '15小狐狸被电台表扬了',
+					duration: 423
+				}]
+            }
+        },
+        onShareAppMessage() {
+            return {
+                title: this.banner.title + "-布谷布谷讲故事",
+                path: '/pages/detail/detail?query=' + JSON.stringify(this.banner)
+            }
+        },
+        onLoad(event) {
+            // 目前在某些平台参数会被主动 decode，暂时这样处理。
+			console.log(event.query);
+            try {
+                this.banner = JSON.parse(decodeURIComponent(event.query));
+            } catch (error) {
+                this.banner = JSON.parse(event.query);
+            }
+
+            uni.setNavigationBarTitle({
+                title: this.banner.title + "-布谷布谷讲故事"
+            });
+            this.getDetail();
+        },
+		components:{
+			uniList,
+			uniListItem
+		},
+        methods: {
+            getDetail() {
+                uni.request({
+                    url: 'https://unidemo.dcloud.net.cn/api/news/36kr/' + this.banner.post_id,
+                    success: (result) => {
+                        let content = FAIL_CONTENT
+                        if (result.statusCode == 200) {
+                            content = result.data.content
+                        }
+                        const nodes = htmlParser(content);
+                        // #ifdef APP-PLUS-NVUE
+                        parseImgs(nodes)
+                        // #endif
+                        this.content = nodes
+                    }
+                });
+            },
+			//格式化时长
+			format(num) {
+				return '0'.repeat(2 - String(Math.floor(num / 60)).length) + Math.floor(num / 60) + ':' + '0'.repeat(2 - String(
+					Math.floor(num % 60)).length) + Math.floor(num % 60)
+			},
+			play(detail){
+				uni.navigateTo({
+					url: '/pages/demoPage/index?query=' + encodeURIComponent(JSON.stringify(detail))
+				});
+			}
+        }
+    }
+</script>
+
+<style lang="scss" scoped>
+	/* #ifndef APP-PLUS */
+	page {
+		min-height: 100%;
+	}
+	/* #endif */
+
+    .banner {
+        height: 360upx;
+        position: relative;
+        background-color: #ccc;
+        flex-direction: row;
+        overflow: hidden;
+    }
+
+    .banner-img {
+        flex: 1;
+    }
+
+    .banner-title {
+        position: absolute;
+        left: 30upx;
+        bottom: 30upx;
+        font-size: 32upx;
+        font-weight: 400;
+        line-height: 42upx;
+        color: #ffffff;
+        overflow: hidden;
+        z-index: 11;
+    }
+
+    .article-meta {
+        padding: 20upx 40upx;
+        flex-direction: row;
+        justify-content: flex-start;
+        color: gray;
+    }
+
+    .article-text {
+        font-size: 26upx;
+        line-height: 50upx;
+        margin: 0 20upx;
+    }
+
+    .article-author {
+        font-size: 30upx;
+    }
+
+    .article-time {
+        font-size: 30upx;
+    }
+
+    .article-content {
+        font-size: 30upx;
+        padding: 0 30upx;
+        margin-bottom: 30upx;
+        overflow: hidden;
+    }
+	.uni-list{
+		border-top:1px solid #ddd;
+		.uni-list-item{
+			border-bottom:1px solid  #ddd;
+			display:flex;
+			justify-content: space-between;
+			line-height:2rem;
+			height:2rem;
+			.list-title{
+				font-size:0.8rem;
+				flex:0 0 60%;
+				text-indent:1rem;
+			}
+			.list-text{
+				font-size:0.6rem;
+				color:#ddd;
+				flex:0 0 20%;
+			}
+		}
+	}
+</style>
